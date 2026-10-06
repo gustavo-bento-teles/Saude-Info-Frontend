@@ -69,7 +69,7 @@ function ListaMedicamentos({ medicamentos }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="font-semibold text-slate-900 break-words">
+        <p className="font-semibold text-slate-900">
           {medicamento.nome}
         </p>
 
