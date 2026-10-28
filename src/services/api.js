@@ -62,6 +62,12 @@ export const atualizarUnidade = (campos) =>
 export const criarMedico = (dados) =>
   requisicao("/medico/", { method: "POST", body: JSON.stringify(dados) });
 
+export const atualizarMedico = (dados) =>
+  requisicao("/medico/", {
+    method: "PATCH",
+    body: JSON.stringify(dados),
+  });
+
 export const deletarMedico = (id) =>
   requisicao(`/medico/${id}`, { method: "DELETE" });
 

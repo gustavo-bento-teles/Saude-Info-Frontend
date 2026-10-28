@@ -6,6 +6,7 @@ import {
   buscarUnidade,
   atualizarUnidade,
   criarMedico,
+  atualizarMedico,
   deletarMedico,
   criarMedicamento,
   deletarMedicamento,
@@ -25,8 +26,8 @@ export default function Painel({ unidadeId, aoSair }) {
   const [dosagemMedicamento, setDosagemMedicamento] = useState("");
   const [formaMedicamento, setFormaMedicamento] = useState("");
 
-  const [abertura, setAbertura] = useState("07:00");
-  const [fechamento, setFechamento] = useState("17:00");
+  const [abertura, setAbertura] = useState("");
+  const [fechamento, setFechamento] = useState("");
 
   const carregar = useCallback(async () => {
     try {
@@ -95,6 +96,22 @@ export default function Painel({ unidadeId, aoSair }) {
       pessoas_fila_atendimento: 0,
       pessoas_atendidas: 0,
     });
+
+  async function alternarStatusMedico(id, statusAtual) {
+    console.log(id);
+    console.log(statusAtual);
+    
+    try {
+      // Passa um único objeto com o medico_id e o status_medico para a API
+      await atualizarMedico({ 
+        medico_id: id,
+        status_medico: !statusAtual,
+      });
+      await carregar(); // Recarrega a lista
+    } catch (erro) {
+      console.error("Erro ao alterar status do médico:", erro);
+    }
+  }
 
   async function adicionarProfissional() {
     const nome = nomeProfissional.trim();
@@ -280,7 +297,7 @@ export default function Painel({ unidadeId, aoSair }) {
             </div>
           </div>
         </section>
-        
+
         <section className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-6">
           <h3 className="text-xl font-bold text-slate-900 mb-8">
             Fila de Atendimento
@@ -433,16 +450,35 @@ export default function Painel({ unidadeId, aoSair }) {
                 className="flex items-center justify-between py-3"
               >
                 <div>
-                  <p className="font-medium">{p.nome}</p>
-                  <p className="text-sm text-slate-500">{p.especialidade}</p>
+                  <p
+                    className={`font-medium ${!p.atendendo ? "text-slate-400 line-through" : ""}`}
+                  >
+                    {p.nome}
+                  </p>
+                  <p className="text-sm text-slate-500">{p.especializacao}</p>
                 </div>
 
-                <button
-                  onClick={() => removerProfissional(p.id)}
-                  className="text-red-500 hover:text-red-700 transition"
-                >
-                  🗑️
-                </button>
+                <div className="flex items-center gap-3">
+                  {/* Botão de Ativo / Inativo */}
+                  <button
+                    onClick={() => alternarStatusMedico(p.id, p.atendendo)}
+                    className={`px-3 py-1 text-xs font-semibold rounded-full transition ${
+                      p.atendendo
+                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-red-100 text-red-700 hover:bg-red-200"
+                    }`}
+                  >
+                    {p.atendendo ? "🟢 Ativo" : "🔴 Inativo"}
+                  </button>
+
+                  {/* Botão de Deletar */}
+                  <button
+                    onClick={() => removerProfissional(p.id)}
+                    className="text-red-500 hover:text-red-700 transition"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
             ))}
           </div>
