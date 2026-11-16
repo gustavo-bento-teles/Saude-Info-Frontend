@@ -98,18 +98,11 @@ export default function Painel({ unidadeId, aoSair }) {
     });
 
   async function alternarStatusMedico(id, statusAtual) {
-    console.log(id);
-    console.log(statusAtual);
-    
     try {
-      // Passa um único objeto com o medico_id e o status_medico para a API
-      await atualizarMedico({ 
-        medico_id: id,
-        status_medico: !statusAtual,
-      });
-      await carregar(); // Recarrega a lista
+      await atualizarMedico(id, !statusAtual);
+      await carregar();
     } catch (erro) {
-      console.error("Erro ao alterar status do médico:", erro);
+      console.error("Erro ao atualizar o status do médico:", erro);
     }
   }
 
